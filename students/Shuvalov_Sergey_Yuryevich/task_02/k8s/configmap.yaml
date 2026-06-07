@@ -1,0 +1,18 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app28-config
+  namespace: web28
+  labels:
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+data:
+  PORT: "8034"
+  NODE_ENV: "production"
+  STU_ID: "220253"
+  STU_GROUP: "feis-576"
+  STU_VARIANT: "28"
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
+  DB_NAME: "app_220253_v28"
+  DB_USER: "postgres"

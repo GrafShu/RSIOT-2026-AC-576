@@ -1,0 +1,18 @@
+﻿apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: web28-app-monitor
+  namespace: app-monitoring
+  labels:
+    release: monitoring
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+spec:
+  selector:
+    matchLabels:
+      app: web28-app
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s

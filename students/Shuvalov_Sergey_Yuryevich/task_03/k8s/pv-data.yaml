@@ -1,0 +1,17 @@
+﻿apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-data-pv
+  labels:
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: redis-ssd
+  hostPath:
+    path: /mnt/data/redis
+    type: DirectoryOrCreate

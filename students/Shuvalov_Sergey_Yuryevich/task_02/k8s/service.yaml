@@ -1,0 +1,17 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: app28
+  namespace: web28
+  labels:
+    app: app28
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+spec:
+  selector:
+    app: app28
+  ports:
+    - port: 80
+      targetPort: 8034
+      name: http
+  type: ClusterIP

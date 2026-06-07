@@ -1,0 +1,10 @@
+﻿apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: redis-ssd
+  labels:
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+provisioner: docker.io/hostpath
+reclaimPolicy: Delete
+volumeBindingMode: Immediate

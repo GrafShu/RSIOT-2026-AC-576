@@ -1,0 +1,45 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web28-app
+  namespace: app-monitoring
+  labels:
+    app: web28-app
+    org.bstu.student.fullname: "Shuvalov-Sergey-Yurevich"
+    org.bstu.student.id: "220253"
+    org.bstu.group: "feis-576"
+    org.bstu.variant: "28"
+    org.bstu.course: "RSIOT"
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web28-app
+  template:
+    metadata:
+      labels:
+        app: web28-app
+    spec:
+      containers:
+        - name: app
+          image: bstu-http-service:v2-metrics
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9034
+              name: http
+          env:
+            - name: STU_ID
+              value: "220253"
+            - name: STU_GROUP
+              value: "feis-576"
+            - name: STU_VARIANT
+              value: "28"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"

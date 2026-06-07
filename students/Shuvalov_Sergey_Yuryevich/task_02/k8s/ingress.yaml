@@ -1,0 +1,23 @@
+﻿apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app28
+  namespace: web28
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  labels:
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: app28.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app28
+                port:
+                  number: 80

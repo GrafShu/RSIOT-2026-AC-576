@@ -1,0 +1,110 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app28
+  namespace: web28
+  labels:
+    app: app28
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+    org.bstu.student.fullname: "Shuvalov-Sergey-Yurevich"
+    org.bstu.student.id: "220253"
+    org.bstu.group: "feis-576"
+    org.bstu.variant: "28"
+    org.bstu.course: "RSIOT"
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: app28
+  template:
+    metadata:
+      labels:
+        app: app28
+    spec:
+      containers:
+        - name: app28
+          image: bstu-http-service:stu-220253-v28
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8034
+              name: http
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app28-config
+                  key: PORT
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: app28-config
+                  key: NODE_ENV
+            - name: STU_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: app28-config
+                  key: STU_ID
+            - name: STU_GROUP
+              valueFrom:
+                configMapKeyRef:
+                  name: app28-config
+                  key: STU_GROUP
+            - name: STU_VARIANT
+              valueFrom:
+                configMapKeyRef:
+                  name: app28-config
+                  key: STU_VARIANT
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: app28-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app28-config
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app28-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: app28-config
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app28-secret
+                  key: DB_PASSWORD
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "400m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8034
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 8034
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3

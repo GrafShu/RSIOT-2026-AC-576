@@ -1,0 +1,62 @@
+﻿services:
+  app:
+    build: .
+    image: bstu-http-service:stu-220253-v28
+    container_name: app-feis-576-220253-v28
+    ports:
+      - "9034:9034"
+    environment:
+      - STU_ID=220253
+      - STU_GROUP=feis-576
+      - STU_VARIANT=28
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=app_220253_v28
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    volumes:
+      - data_w28:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - net-feis-576-220253-v28
+    restart: unless-stopped
+    labels:
+      org.bstu.owner: GrafShu
+      org.bstu.student.slug: feis-576-220253-v28
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: db-feis-576-220253-v28
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app_220253_v28
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - net-feis-576-220253-v28
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app_220253_v28"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    labels:
+      org.bstu.owner: GrafShu
+      org.bstu.student.slug: feis-576-220253-v28
+
+networks:
+  net-feis-576-220253-v28:
+    driver: bridge
+    name: net-feis-576-220253-v28
+
+volumes:
+  data_w28:
+    name: data_w28
+  postgres_data:
+    name: postgres_data_220253_v28

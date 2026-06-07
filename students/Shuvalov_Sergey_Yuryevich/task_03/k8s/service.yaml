@@ -1,0 +1,22 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: state28
+  labels:
+    app: redis
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+    org.bstu.student.fullname: "Shuvalov-Sergey-Yurevich"
+    org.bstu.student.id: "220253"
+    org.bstu.group: "feis-576"
+    org.bstu.variant: "28"
+    org.bstu.course: "RSIOT"
+spec:
+  clusterIP: None
+  selector:
+    app: redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+      name: redis

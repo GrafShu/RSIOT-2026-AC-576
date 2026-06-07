@@ -1,0 +1,42 @@
+﻿apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: redis-backup
+  namespace: state28
+  labels:
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+spec:
+  schedule: "5 */10 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: redis-backup
+        spec:
+          containers:
+            - name: backup
+              image: redis:7-alpine
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  REDIS_PASSWORD="securepassword123"
+                  BACKUP_FILE="/backup/redis-backup-$(date +%Y%m%d-%H%M%S).rdb"
+                  echo "Starting backup at $(date)"
+                  redis-cli -a $REDIS_PASSWORD --rdb $BACKUP_FILE -h redis-0.redis.state28.svc.cluster.local
+                  echo "Backup completed: $BACKUP_FILE"
+                  ls -la /backup/
+                  # Keep only last 10 backups
+                  ls -t /backup/redis-backup-*.rdb | tail -n +11 | xargs rm -f 2>/dev/null || true
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: backup-pvc
+          restartPolicy: OnFailure

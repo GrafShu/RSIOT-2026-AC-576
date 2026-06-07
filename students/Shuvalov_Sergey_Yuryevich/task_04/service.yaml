@@ -1,0 +1,15 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: web28-app
+  namespace: app-monitoring
+  labels:
+    app: web28-app
+spec:
+  selector:
+    app: web28-app
+  ports:
+    - port: 80
+      targetPort: 9034
+      name: http
+  type: ClusterIP

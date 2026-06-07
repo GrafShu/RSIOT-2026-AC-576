@@ -1,0 +1,54 @@
+﻿apiVersion: batch/v1
+kind: Job
+metadata:
+  name: redis-restore
+  namespace: state28
+  labels:
+    org.bstu.owner: "GrafShu"
+    org.bstu.student.slug: "feis-576-220253-v28"
+spec:
+  template:
+    spec:
+      containers:
+        - name: restore
+          image: redis:7-alpine
+          command:
+            - /bin/sh
+            - -c
+            - |
+              REDIS_PASSWORD="securepassword123"
+              echo "Available backups:"
+              ls -la /backup/
+              
+              # Найти последний бэкап
+              LATEST_BACKUP=$(ls -t /backup/redis-backup-*.rdb | head -1)
+              if [ -z "$LATEST_BACKUP" ]; then
+                echo "ERROR: No backup file found!"
+                exit 1
+              fi
+              
+              echo "Restoring from: $LATEST_BACKUP"
+              
+              # Для Redis полное восстановление требует остановки сервера
+              # В данном случае мы просто показываем наличие бэкапа
+              # Для реального восстановления нужно скопировать файл в PVC Redis
+              echo "Backup file size:"
+              ls -la $LATEST_BACKUP
+              
+              # Проверяем подключение к Redis
+              redis-cli -a $REDIS_PASSWORD -h redis-0.redis.state28.svc.cluster.local ping
+              if [ $? -eq 0 ]; then
+                echo "Redis is reachable"
+              else
+                echo "Redis is not reachable"
+                exit 1
+              fi
+          volumeMounts:
+            - name: backup
+              mountPath: /backup
+      volumes:
+        - name: backup
+          persistentVolumeClaim:
+            claimName: backup-pvc
+      restartPolicy: Never
+  backoffLimit: 1
